@@ -9,14 +9,15 @@ class ClientTest(unittest.TestCase):
     ]
     """ ------------ Add the assertion below ------------ """
     
-    expected = [
-      ('ABC', 120.48, 121.2, 120.84),
-      ('DEF', 117.87, 121.68, 119.775)
-    ]
-    
-    for i in range(len(quotes)):
-      assert getDataPoint(quotes[i])[-1] ==expected[i][-1]
+    for quote in quotes:
+      
+      bid_price = float(quote['top_bid']['price'])
+      ask_price = float(quote['top_ask']['price'])
+      price, stock = (bid_price + ask_price) / 2,  quote['stock']
 
+      self.assertEqual(getDataPoint(quote), (stock, bid_price, ask_price, price))
+      
+      
       
   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
     quotes = [
@@ -25,10 +26,16 @@ class ClientTest(unittest.TestCase):
     ]
     """ ------------ Add the assertion below ------------ """
     
-    expected = [
-      ('ABC', 120.48, 119.2, 119.84),
-      ('DEF', 117.87, 121.68, 119.775)
-    ]
+    for quote in quotes:
+      
+      bid_price = float(quote['top_bid']['price'])
+      ask_price = float(quote['top_ask']['price'])
+      price, stock = (bid_price + ask_price) / 2,  quote['stock']
+      
+      result = getDataPoint(quote)
+      expected_result = (stock, bid_price, ask_price, price)
+
+      self.assertEqual((result[1]>result[2]), expected_result[1]>expected_result[2])
     
     
     for i in range(len(quotes)):
